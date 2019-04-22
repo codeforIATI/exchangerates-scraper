@@ -20,7 +20,7 @@ def save_status(started_at, finished_at=None, success=False):
         'status'
     )
 
-scrape_started_at = datetime.now().isoformat()
+scrape_started_at = datetime.now()
 save_status(scrape_started_at)
 
 def run_scraper():
@@ -28,11 +28,11 @@ def run_scraper():
 	the_file = open("consolidated.csv", "r")
 	the_csv = csv.DictReader(the_file)
 	for row in the_csv:
-		row["RateFirstSeen"] = datetime.now().isoformat()
+		row["RateFirstSeen"] = datetime.now()
 		row["Date"] = datetime.strptime(row["Date"], "%Y-%m-%d")
 		scraperwiki.sqlite.save(key, row, 'rates')
 
 run_scraper()
 
-scrape_finished_at = datetime.now().isoformat()
+scrape_finished_at = datetime.now()
 save_status(scrape_started_at, scrape_finished_at, True)
