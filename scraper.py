@@ -1,10 +1,10 @@
-
-import exchangerates.get_rates as gr
+from os import environ
 from io import StringIO
 environ['SCRAPERWIKI_DATABASE_NAME'] = 'sqlite:///data.sqlite'
 import scraperwiki
 import csv
 from datetime import datetime
+import exchangerates.get_rates as gr
 
 key = ['Date', "Currency", "Frequency", "Source"]
 
