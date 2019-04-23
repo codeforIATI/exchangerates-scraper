@@ -48,6 +48,7 @@ def parse_row(row, attempt=1, speed=0):
             raise FailedAfterRepeatedAttempts("""Failed after {} attempts at {}ms
                 to import row data {}""".format(attempt, speed, row))
         parse_row(row, attempt=attempt+1, speed=speed+10)
+    return speed
 
 
 def run_scraper():
