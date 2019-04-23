@@ -6,7 +6,7 @@ import csv
 import time
 from datetime import datetime
 import exchangerates.get_rates as gr
-from sqlite3 import OperationalError
+import sqlalchemy
 
 key = ['Date', "Currency", "Frequency", "Source"]
 
@@ -43,7 +43,7 @@ def parse_row(row, attempt=1, speed=0):
         time.sleep(speed)
     try:
         scraperwiki.sqlite.save(key, row, 'rates')
-    except OperationalError:
+    except sqlalchemy.exc.OperationalError:
         if attempt ==5:
             raise FailedAfterRepeatedAttempts("""Failed after {} attempts at {}ms
                 to import row data {}""".format(attempt, speed, row))
@@ -54,8 +54,13 @@ def run_scraper():
     gr.update_rates("consolidated.csv")
     the_file = open("consolidated.csv", "r")
     the_csv = csv.DictReader(the_file)
+    speed = 0
+    print("Downloaded data, found {} lines. Parsing!".format(len(the_csv)))
     for row in the_csv:
-        parse_row(row)
+        speed = parse_row(row=row, attempt=0, speed=speed)
+        if speed == 1000:
+            print("Taking too long, stopped at 1000ms!")
+            raise
 
 run_scraper()
 
