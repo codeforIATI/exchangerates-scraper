@@ -38,7 +38,8 @@ def parse_row(row, attempt=1, speed=0):
     hopefully we don't run into these problems. We retry five times, progressively
     increasing the amount of ms we sleep for, by 10ms each time."""
     row["RateFirstSeen"] = datetime.now()
-    row["Date"] = datetime.strptime(row["Date"], "%Y-%m-%d")
+    if type(row["Date"]) == str: # Because we loop this function, may already have been set
+        row["Date"] = datetime.strptime(row["Date"], "%Y-%m-%d")
     if speed!=0:
         time.sleep(speed)
     try:
