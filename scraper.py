@@ -45,7 +45,7 @@ def parse_row(row, attempt=1, speed=0):
     try:
         scraperwiki.sqlite.save(key, row, 'rates')
     except sqlalchemy.exc.OperationalError:
-        if attempt ==5:
+        if attempt == 20:
             raise FailedAfterRepeatedAttempts("""Failed after {} attempts at {}ms
                 to import row data {}""".format(attempt, speed, row))
         parse_row(row, attempt=attempt+1, speed=speed+10)
