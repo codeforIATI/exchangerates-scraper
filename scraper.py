@@ -55,7 +55,7 @@ def run_scraper():
     the_file = open("consolidated.csv", "r")
     the_csv = csv.DictReader(the_file)
     speed = 0
-    print("Downloaded data, found {} lines. Parsing!".format(len(the_csv)))
+    print("Downloaded data, parsing!")
     for row in the_csv:
         speed = parse_row(row=row, attempt=0, speed=speed)
         if speed == 1000:
