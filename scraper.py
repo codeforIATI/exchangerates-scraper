@@ -51,10 +51,10 @@ def parse_row(row, attempt=1, speed=0):
 
 
 def run_scraper():
-	gr.update_rates("consolidated.csv")
-	the_file = open("consolidated.csv", "r")
-	the_csv = csv.DictReader(the_file)
-	for row in the_csv:
+    gr.update_rates("consolidated.csv")
+    the_file = open("consolidated.csv", "r")
+    the_csv = csv.DictReader(the_file)
+    for row in the_csv:
         parse_row(row)
 
 run_scraper()
