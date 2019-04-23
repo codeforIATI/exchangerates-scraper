@@ -30,7 +30,7 @@ scrape_started_at = datetime.now()
 save_status(scrape_started_at)
 
 
-def parse_row(row, attempt=1, speed=0)
+def parse_row(row, attempt=1, speed=0):
     """We were getting OperationalError because of database locks, presumably
     because the database is so large. The database was locking as
     `scraperwiki.sqlite.save()` first attempts to read from the database
