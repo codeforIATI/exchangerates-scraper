@@ -75,7 +75,6 @@ def run_scraper():
             raise
         if i%10000 == 0:
             print("Processing {}th row".format(i))
-            scraperwiki.sql.commit()
 
 run_scraper()
 
