@@ -73,7 +73,7 @@ def run_scraper():
             print("Taking too long, stopped at 1000ms!")
             raise
         if i%10000 == 0:
-            print("Processing {}th row")
+            print("Processing {}th row".format(i))
 
 run_scraper()
 
