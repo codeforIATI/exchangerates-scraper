@@ -57,8 +57,11 @@ def run_scraper():
     the_csv = csv.DictReader(the_file)
     speed = 0
     print("Downloaded data, loading existing DB data!")
-    db_query = scraperwiki.sql.select("Date, Currency, Frequency, Source from rates;")
-    db_data = list(map(lambda r: (r["Date"], r["Currency"], r["Frequency"]), db_query))
+    try:
+        db_query = scraperwiki.sql.select("Date, Currency, Frequency, Source from rates;")
+        db_data = list(map(lambda r: (r["Date"], r["Currency"], r["Frequency"]), db_query))
+    except sqlalchemy.exc.OperationalError:
+        db_data = []
     print("Loaded existing data ({} rows), parsing!".format(len(db_data)))
 
     for i, row in enumerate(the_csv):
