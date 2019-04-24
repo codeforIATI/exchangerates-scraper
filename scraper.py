@@ -45,7 +45,7 @@ def parse_row(row, attempt=1, speed=0):
     try:
         scraperwiki.sqlite.save(key, row, 'rates')
     except sqlalchemy.exc.OperationalError:
-        if attempt == 20:
+        if attempt == 5:
             raise FailedAfterRepeatedAttempts("""Failed after {} attempts at {}ms
                 to import row data {}""".format(attempt, speed, row))
         parse_row(row, attempt=attempt+1, speed=speed+10)
@@ -57,12 +57,23 @@ def run_scraper():
     the_file = open("consolidated.csv", "r")
     the_csv = csv.DictReader(the_file)
     speed = 0
-    print("Downloaded data, parsing!")
-    for row in the_csv:
+    print("Downloaded data, loading existing DB data!")
+    db_query = scraperwiki.sql.select("Date, Currency, Frequency, Source from rates;")
+    db_data = list(map(lambda r: (r["Date"], r["Currency"], r["Frequency"]), db_query))
+    print("Loaded existing data ({} rows), parsing!".format(len(db_data)))
+
+    for i, row in enumerate(the_csv):
+        if (datetime.strptime(row["Date"], "%Y-%m-%d"), 
+            row["Currency"], 
+            row["Frequency"]) in db_data:
+            print("Skipping")
+            continue
         speed = parse_row(row=row, attempt=0, speed=speed)
         if speed == 1000:
             print("Taking too long, stopped at 1000ms!")
             raise
+        if i%10000 == 0:
+            print("Processing {}th row")
 
 run_scraper()
 
