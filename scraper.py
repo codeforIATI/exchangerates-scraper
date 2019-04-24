@@ -38,8 +38,7 @@ def parse_row(row, attempt=1, speed=0):
     hopefully we don't run into these problems. We retry five times, progressively
     increasing the amount of ms we sleep for, by 10ms each time."""
     row["RateFirstSeen"] = datetime.now()
-    if type(row["Date"]) == str: # Because we loop this function, may already have been set
-        row["Date"] = datetime.strptime(row["Date"], "%Y-%m-%d")
+    row["Date"] = row["Date"]
     if speed!=0:
         time.sleep(speed)
     try:
@@ -63,10 +62,9 @@ def run_scraper():
     print("Loaded existing data ({} rows), parsing!".format(len(db_data)))
 
     for i, row in enumerate(the_csv):
-        if (datetime.strptime(row["Date"], "%Y-%m-%d"), 
+        if (row["Date"], 
             row["Currency"], 
             row["Frequency"]) in db_data:
-            print("Skipping")
             continue
         speed = parse_row(row=row, attempt=0, speed=speed)
         if speed == 1000:
