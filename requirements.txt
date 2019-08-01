@@ -1,4 +1,4 @@
 urllib3==1.24.2
-exchangerates==0.2.1
-requests==2.21.0
+exchangerates==0.3.0
+requests==2.22.0
 scraperwiki==0.5.1
