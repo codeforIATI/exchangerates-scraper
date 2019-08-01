@@ -1,6 +1,7 @@
 from os import environ
 from io import StringIO
 environ['SCRAPERWIKI_DATABASE_NAME'] = 'sqlite:///data.sqlite'
+environ['FRED_API_KEY'] = environ['MORPH_FRED_API_KEY']
 import scraperwiki
 import csv
 import time
@@ -65,8 +66,8 @@ def run_scraper():
     print("Loaded existing data ({} rows), parsing!".format(len(db_data)))
 
     for i, row in enumerate(the_csv):
-        if (row["Date"], 
-            row["Currency"], 
+        if (row["Date"],
+            row["Currency"],
             row["Frequency"]) in db_data:
             continue
         speed = parse_row(row=row, attempt=0, speed=speed)
