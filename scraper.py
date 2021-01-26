@@ -1,3 +1,4 @@
+import os
 from os import environ
 from io import StringIO
 environ['SCRAPERWIKI_DATABASE_NAME'] = 'sqlite:///data.sqlite'
@@ -27,9 +28,6 @@ def save_status(started_at, finished_at=None, success=False):
         'status'
     )
 
-scrape_started_at = datetime.now()
-save_status(scrape_started_at)
-
 
 def parse_row(row, attempt=1, speed=0):
     """We were getting OperationalError because of database locks, presumably
@@ -53,8 +51,11 @@ def parse_row(row, attempt=1, speed=0):
 
 
 def run_scraper():
-    gr.update_rates("consolidated.csv")
-    the_file = open("consolidated.csv", "r")
+    os.makedirs("output", exist_ok=True)
+    gr.update_rates(os.path.join("output", "consolidated.csv"))
+    if environ.get("GITHUB_PAGES", False) != False:
+        return
+    the_file = open(os.path.join("output", "consolidated.csv"), "r")
     the_csv = csv.DictReader(the_file)
     speed = 0
     print("Downloaded data, loading existing DB data!")
@@ -77,7 +78,13 @@ def run_scraper():
         if i%10000 == 0:
             print("Processing {}th row".format(i))
 
-run_scraper()
 
-scrape_finished_at = datetime.now()
-save_status(scrape_started_at, scrape_finished_at, True)
+if environ.get("GITHUB_PAGES", False) == False:
+    scrape_started_at = datetime.now()
+    save_status(scrape_started_at)
+    run_scraper()
+    scrape_finished_at = datetime.now()
+    save_status(scrape_started_at, scrape_finished_at, True)
+else:
+    run_scraper()
+print ("Done.")
